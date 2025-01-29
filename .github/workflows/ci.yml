@@ -28,15 +28,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install vcpkg
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake g++ libboost-test-dev libeigen3-dev libyaml-cpp-dev
+          git clone https://github.com/microsoft/vcpkg.git
+          ./vcpkg/bootstrap-vcpkg.sh
+
+      - name: Install dependencies using vcpkg
+        run: |
+          ./vcpkg/vcpkg install boost-test yaml-cpp eigen3
 
       - name: Configure CMake
         run: |
           mkdir -p build && cd build
-          cmake ..
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build Project
         run: |
@@ -68,7 +72,8 @@ jobs:
 
       - name: Set LD_LIBRARY_PATH and Run Tests
         run: |
-          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/vcpkg/installed/x64-linux/lib:$LD_LIBRARY_PATH
           cd build
           ctest --output-on-failure
+        
         
