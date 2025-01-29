@@ -1,15 +1,16 @@
 #define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
 #include "Configuration.hpp"
 #include "MatrixSolver.hpp"
-#include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(ConfigurationTests)
 
-BOOST_AUTO_TEST_CASE(ReadConfiguration) {
+BOOST_AUTO_TEST_CASE(ReadConfiguration)
+{
   const MatrixSolver::DecompositionType expectedDecompositionType{
       MatrixSolver::QR};
   const std::string expectedMatrixFileName{"../data/m3.csv"};
-  const int expectedMatrixSize{3};
+  const int         expectedMatrixSize{3};
 
   Configuration configuration{"testconfig.yml"};
   BOOST_TEST(expectedDecompositionType == configuration.decompositionType);
