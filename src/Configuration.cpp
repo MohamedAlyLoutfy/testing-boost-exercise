@@ -5,8 +5,9 @@
 
 Configuration::Configuration(const std::string yamlFile)
 {
-  YAML::Node  config              = YAML::LoadFile(yamlFile);
-  std::string decompositionString = config["DecompositionType"].as<std::string>();
+  YAML::Node  config = YAML::LoadFile(yamlFile);
+  std::string decompositionString =
+      config["DecompositionType"].as<std::string>();
   if (decompositionString == "LU") {
     decompositionType = MatrixSolver::LU;
   } else if (decompositionString == "QR") {

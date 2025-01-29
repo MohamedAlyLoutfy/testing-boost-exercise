@@ -28,7 +28,7 @@ void MatrixSolver::solve(const Eigen::MatrixXd &A, const Eigen::VectorXd &b,
         A * x; // only really effective if we could go to higher precision here
     x = x + LU.solve(residual);
   } else {
-    assert(false); // Unsupported decomposition type, should be caught in configuration
-                   // already
+    assert(false); // Unsupported decomposition type, should be caught in
+                   // configuration already
   }
 }

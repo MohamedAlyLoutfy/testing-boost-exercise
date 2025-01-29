@@ -7,9 +7,10 @@ BOOST_AUTO_TEST_SUITE(ConfigurationTests)
 
 BOOST_AUTO_TEST_CASE(ReadConfiguration)
 {
-  const MatrixSolver::DecompositionType expectedDecompositionType{MatrixSolver::QR};
-  const std::string                     expectedMatrixFileName{"../data/m3.csv"};
-  const int                             expectedMatrixSize{3};
+  const MatrixSolver::DecompositionType expectedDecompositionType{
+      MatrixSolver::QR};
+  const std::string expectedMatrixFileName{"../data/m3.csv"};
+  const int         expectedMatrixSize{3};
 
   Configuration configuration{"testconfig.yml"};
   BOOST_TEST(expectedDecompositionType == configuration.decompositionType);
