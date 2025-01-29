@@ -62,10 +62,13 @@ jobs:
         with:
           name: build-artifacts
           path: build
+
       - name: Set execution permission for tests
         run: chmod +x build/testsidemade
 
-      - name: Run Tests
+      - name: Set LD_LIBRARY_PATH and Run Tests
         run: |
+          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
           cd build
           ctest --output-on-failure
+        
