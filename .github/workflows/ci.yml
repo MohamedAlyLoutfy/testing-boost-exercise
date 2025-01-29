@@ -66,5 +66,6 @@ jobs:
           make
       - name: Run Tests
         run: |
+          cd build
           ctest --output-on-failure
         
