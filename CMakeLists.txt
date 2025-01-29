@@ -3,7 +3,7 @@ project("sidemade")
 
 # Make cmake modules visible to CMake
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-add_definitions(-DBOOST_TEST_DYN_LINK)
+
 find_package(Eigen3 3.2 REQUIRED)
 find_package(yaml-cpp 0.6.0 REQUIRED)
 

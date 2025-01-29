@@ -22,58 +22,59 @@ jobs:
           find src/ tests/ -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run -Werror
 
   build:
-    name: Build Project
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install vcpkg
+      - name: Install Dependencies
         run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          ./vcpkg/bootstrap-vcpkg.sh
-
-      - name: Install dependencies using vcpkg
-        run: |
-          ./vcpkg/vcpkg install boost-test yaml-cpp eigen3
+          sudo apt update
+          sudo apt-get install -y \
+            cmake \
+            libeigen3-dev \
+            libyaml-cpp-dev \
+            libboost-test-dev
 
       - name: Configure CMake
         run: |
-          mkdir -p build && cd build
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
+          mkdir -p build
+          cd build
+          cmake ..
 
       - name: Build Project
         run: |
           cd build
           make
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: build/
-
   test:
-    name: Run Tests
-    needs: build
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: build
-
-      - name: Set execution permission for tests
-        run: chmod +x build/testsidemade
-
-      - name: Set LD_LIBRARY_PATH and Run Tests
+      - name: Install Dependencies
         run: |
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/vcpkg/installed/x64-linux/lib:$LD_LIBRARY_PATH
+          sudo apt update
+          sudo apt-get install -y \
+            cmake \
+            libeigen3-dev \
+            libyaml-cpp-dev \
+            libboost-test-dev
+
+      - name: Configure CMake
+        run: |
+          mkdir -p build
           cd build
-          ctest --output-on-failure
-        
-        
+          cmake ..
+
+      - name: Build Project
+        run: |
+          cd build
+          make
+
+      - name: Run Tests
+        run: |
+          cd build
+          make test
