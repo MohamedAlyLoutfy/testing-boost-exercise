@@ -62,6 +62,8 @@ jobs:
         with:
           name: build-artifacts
           path: build
+      - name: Set execution permission for tests
+        run: chmod +x build/testsidemade
 
       - name: Run Tests
         run: |
