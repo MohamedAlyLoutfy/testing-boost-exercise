@@ -22,59 +22,53 @@ jobs:
           find src/ tests/ -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run -Werror
 
   build:
+    name: Build Project
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt-get install -y \
-            cmake \
-            libeigen3-dev \
-            libyaml-cpp-dev \
-            libboost-test-dev
+          sudo apt-get update
+          sudo apt-get install -y cmake libboost-test-dev libeigen3-dev libyaml-cpp-dev
 
       - name: Configure CMake
         run: |
-          mkdir -p build
-          cd build
+          mkdir -p build && cd build
           cmake ..
 
       - name: Build Project
         run: |
           cd build
           make
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
 
   test:
-    runs-on: ubuntu-latest
+    name: Run Tests
     needs: build
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt-get install -y \
-            cmake \
-            libeigen3-dev \
-            libyaml-cpp-dev \
-            libboost-test-dev
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build
 
-      - name: Configure CMake
-        run: |
-          mkdir -p build
-          cd build
-          cmake ..
+      - name: Set execution permission for tests
+        run: chmod +x build/testsidemade
 
-      - name: Build Project
+      - name: Set LD_LIBRARY_PATH and Run Tests
         run: |
+          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
           cd build
-          make
-
-      - name: Run Tests
-        run: |
-          cd build
-          make test
+          ctest --output-on-failure
+        
