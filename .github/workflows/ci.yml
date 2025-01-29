@@ -43,12 +43,6 @@ jobs:
           cd build
           make
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: build/
-
   test:
     name: Run Tests
     needs: build
@@ -56,19 +50,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: build
-
-      - name: Set execution permission for tests
-        run: chmod +x build/testsidemade
-
-      - name: Set LD_LIBRARY_PATH and Run Tests
+      - name: Install dependencies
         run: |
-          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+          sudo apt-get update
+          sudo apt-get install -y cmake libboost-test-dev libeigen3-dev libyaml-cpp-dev
+
+      - name: Configure CMake
+        run: |
+          mkdir -p build && cd build
+          cmake ..
+
+      - name: Build Project
+        run: |
           cd build
+          make
+      - name: Run Tests
+        run: |
           ctest --output-on-failure
         
