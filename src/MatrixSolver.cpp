@@ -9,7 +9,8 @@ MatrixSolver::MatrixSolver(DecompositionType decompositionType)
     : _decompositionType(decompositionType) {}
 
 void MatrixSolver::solve(const Eigen::MatrixXd &A, const Eigen::VectorXd &b,
-                         Eigen::VectorXd &x) {
+                         Eigen::VectorXd &x)
+{
   if (_decompositionType == LU) {
     PartialPivLU<MatrixXd> LU;
     LU.compute(A);

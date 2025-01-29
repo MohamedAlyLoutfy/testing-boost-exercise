@@ -1,10 +1,11 @@
 #include "Configuration.hpp"
+#include <iostream>
 #include "MatrixSolver.hpp"
 #include "yaml-cpp/yaml.h"
-#include <iostream>
 
-Configuration::Configuration(const std::string yamlFile) {
-  YAML::Node config = YAML::LoadFile(yamlFile);
+Configuration::Configuration(const std::string yamlFile)
+{
+  YAML::Node  config = YAML::LoadFile(yamlFile);
   std::string decompositionString =
       config["DecompositionType"].as<std::string>();
   if (decompositionString == "LU") {
@@ -20,9 +21,10 @@ Configuration::Configuration(const std::string yamlFile) {
   }
 
   matrixFileName = config["MatrixFileName"].as<std::string>();
-  matrixSize = config["MatrixSize"].as<int>();
+  matrixSize     = config["MatrixSize"].as<int>();
 
   std::cout << "Used decomposition type: " << decompositionString << std::endl;
   std::cout << "Used matrix file: " << matrixFileName << std::endl;
-  std::cout << "Matrix size: " << matrixSize << "\n" << std::endl;
+  std::cout << "Matrix size: " << matrixSize << "\n"
+            << std::endl;
 }
